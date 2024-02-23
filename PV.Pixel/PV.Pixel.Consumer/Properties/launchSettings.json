@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "PV.Pixel.Consumer": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "DockerfileRunArguments": "--network=host"
+    }
+  }
+}
