@@ -5,6 +5,10 @@ VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV.Pixel.Service", "PV.Pixel.Service\PV.Pixel.Service.csproj", "{D05E2F8A-DD31-43F8-903D-26F21483C2D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV.Messages", "PV.Pixel.Messages\PV.Pixel.Messages.csproj", "{E0A15BDF-35A0-4C9E-A87E-E0981969925A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV.Pixel.Consumer", "PV.Pixel.Consumer\PV.Pixel.Consumer.csproj", "{8D2AA458-0B95-4854-A376-FEC28CF88A80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{D05E2F8A-DD31-43F8-903D-26F21483C2D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D05E2F8A-DD31-43F8-903D-26F21483C2D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D05E2F8A-DD31-43F8-903D-26F21483C2D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0A15BDF-35A0-4C9E-A87E-E0981969925A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0A15BDF-35A0-4C9E-A87E-E0981969925A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0A15BDF-35A0-4C9E-A87E-E0981969925A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0A15BDF-35A0-4C9E-A87E-E0981969925A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D2AA458-0B95-4854-A376-FEC28CF88A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2AA458-0B95-4854-A376-FEC28CF88A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2AA458-0B95-4854-A376-FEC28CF88A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2AA458-0B95-4854-A376-FEC28CF88A80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

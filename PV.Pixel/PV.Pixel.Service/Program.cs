@@ -1,3 +1,8 @@
+using Confluent.Kafka;
+using PV.Pixel.Messages;
+using System.Text.Json;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -10,15 +15,25 @@ app.UseHttpsRedirection();
 
 const string clearGif1X1 = @"R0lGODlhAQABAPcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAABAAEAAAgEAP8FBAA7";
 const string gifContentType = "image/gif";
+const string defaultTopic = "pixel-topic";
 
-app.MapGet("/track", (HttpRequest request, HttpResponse response) =>
+var config = new ProducerConfig
 {
-    var pixelRequest = new PixelRequest(request.Headers?.Referer, request.Headers?.UserAgent, request.HttpContext?.Connection?.RemoteIpAddress?.ToString());
-    Console.WriteLine($"tracked:{pixelRequest}");
+    BootstrapServers = "localhost:9093",
+};
+
+
+app.MapGet("/track", async (HttpRequest request, HttpResponse response) =>
+{
+    var pixelRequested = new PixelRequested(request.Headers?.Referer, request.Headers?.UserAgent, request.HttpContext?.Connection?.RemoteIpAddress?.ToString());
+
+    using var producer = new ProducerBuilder<Null, string>(config).Build();
+
+    var message = new Message<Null, string> { Value = JsonSerializer.Serialize(pixelRequested) };
+    await producer.ProduceAsync(defaultTopic, message);
 
     return Results.File(System.Convert.FromBase64String(clearGif1X1), contentType: gifContentType);
 });
 
 app.Run();
 
-internal record PixelRequest(string? Referer, string? UserAgent, string? VisitorIp) { }
