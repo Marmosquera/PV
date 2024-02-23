@@ -12,15 +12,17 @@ var builder = new ConfigurationBuilder()
 
 IConfiguration config = builder.Build();
 
-const string defaultTopic = "pixel-topic";
-const string defaultGroupId = "pixel-group";
+var server = config["Kafka:Server"];
+var defaultTopic = config["Kafka:Default-Topic"];
+var defaultGroupId = config["Kafka:Default-GroupId"];
+
 var logFilePath = Path.Combine(Directory.GetCurrentDirectory(), config["LogFile"]!);
 var logDirectory = Path.GetDirectoryName(logFilePath);
 if (!string.IsNullOrEmpty(logDirectory)) Directory.CreateDirectory(logDirectory);
 
 var kafkaConfig = new ConsumerConfig
 {
-    BootstrapServers = "localhost:9093",
+    BootstrapServers = server,
     GroupId = defaultGroupId,
     AutoOffsetReset = AutoOffsetReset.Earliest
 };
