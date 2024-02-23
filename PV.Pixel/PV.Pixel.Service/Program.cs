@@ -1,39 +1,20 @@
-using Confluent.Kafka;
+using Microsoft.AspNetCore.Mvc;
 using PV.Pixel.Messages;
-using System.Text.Json;
-
+using PV.Pixel.Service;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var server = builder.Configuration["Kafka:Server"];
-var defaultTopic = builder.Configuration["Kafka:Default-Topic"];
-// Add services to the container.
+builder.Services.AddSingleton<IPixelProducer, PixelProducer>();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
 app.UseHttpsRedirection();
 
-const string clearGif1X1 = @"R0lGODlhAQABAPcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEAAP8ALAAAAAABAAEAAAgEAP8FBAA7";
-const string gifContentType = "image/gif";
 
-var config = new ProducerConfig
-{
-    BootstrapServers = server,
-};
-
-
-app.MapGet("/track", async (HttpRequest request, HttpResponse response) =>
+app.MapGet("/track", async ([FromServices] IPixelProducer pixelProducer, HttpRequest request) =>
 {
     var pixelRequested = new PixelRequested(request.Headers?.Referer, request.Headers?.UserAgent, request.HttpContext?.Connection?.RemoteIpAddress?.MapToIPv4()?.ToString());
-
-    using var producer = new ProducerBuilder<Null, string>(config).Build();
-
-    var message = new Message<Null, string> { Value = JsonSerializer.Serialize(pixelRequested) };
-    await producer.ProduceAsync(defaultTopic, message);
-
-    return Results.File(System.Convert.FromBase64String(clearGif1X1), contentType: gifContentType);
+    await pixelProducer.ProducePixelRequested(pixelRequested);
+    return Gif1X1.ToResult();
 });
 
 app.Run();
