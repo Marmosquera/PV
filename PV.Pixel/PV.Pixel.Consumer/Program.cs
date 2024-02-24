@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PV.Pixel.Consumer;
+using PV.Pixel.Consumer.Consumers;
 
 var hostBuilder = new HostBuilder()
     .ConfigureAppConfiguration(builder =>
@@ -13,7 +14,8 @@ var hostBuilder = new HostBuilder()
     .ConfigureServices((hostContext, services) =>
     {
         services.AddTransient<IVisitLogger, VisitLogger>();
-        services.AddHostedService<ConsumerBackgroundService>();
+        services.AddTransient<IPixelHandlers, PixelHandlers>();
+        services.AddHostedService<PixelConsumerBackgroundService>();
     });
 await hostBuilder.RunConsoleAsync().ConfigureAwait(false);
 

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PV.Pixel.Consumer", "PV.Pix
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV.Pixel.Service.Tests", "PV.Pixel.Service.Tests\PV.Pixel.Service.Tests.csproj", "{47EBC233-15A6-42D6-9BF9-9718EC8D76AF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PV.Pixel.Consumer.Tests", "PV.Pixel.Consumer.Tests\PV.Pixel.Consumer.Tests.csproj", "{090AFDC1-02B8-418B-A234-1839E52A0A1D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{47EBC233-15A6-42D6-9BF9-9718EC8D76AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47EBC233-15A6-42D6-9BF9-9718EC8D76AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47EBC233-15A6-42D6-9BF9-9718EC8D76AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{090AFDC1-02B8-418B-A234-1839E52A0A1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{090AFDC1-02B8-418B-A234-1839E52A0A1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{090AFDC1-02B8-418B-A234-1839E52A0A1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{090AFDC1-02B8-418B-A234-1839E52A0A1D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

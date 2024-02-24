@@ -4,18 +4,18 @@ using Microsoft.Extensions.Hosting;
 using PV.Pixel.Messages;
 using System.Text.Json;
 
-namespace PV.Pixel.Consumer
+namespace PV.Pixel.Consumer.Consumers
 {
-    public class ConsumerBackgroundService : BackgroundService
+    public class PixelConsumerBackgroundService : BackgroundService
     {
         private readonly IConfiguration _configuration;
-        private readonly IVisitLogger _visitLogger;
-        public ConsumerBackgroundService(
+        private readonly IPixelHandlers _pixelHandlers;
+        public PixelConsumerBackgroundService(
             IConfiguration configuration,
-            IVisitLogger visitLogger)
+            IPixelHandlers pixelHandlers)
         {
             _configuration = configuration;
-            _visitLogger = visitLogger;
+            _pixelHandlers = pixelHandlers;
         }
 
         protected async override Task ExecuteAsync(CancellationToken cancellingToken)
@@ -41,21 +41,13 @@ namespace PV.Pixel.Consumer
                 try
                 {
                     var pixelRequested = JsonSerializer.Deserialize<PixelRequested>(consumeResult.Message.Value);
-                    await PixelRequestedHandler(pixelRequested);
+                    await _pixelHandlers.PixelRequestedHandler(pixelRequested);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                 }
             }
-        }
-
-        private async Task PixelRequestedHandler(PixelRequested? pixelRequested)
-        {
-            if (pixelRequested == null) return;
-            var logEntry = $"{pixelRequested.RequestedOn:o}|{pixelRequested.Referer ?? "null"}|{pixelRequested.UserAgent ?? "null"}|{pixelRequested.VisitorIp}";
-            Console.WriteLine($"log:{logEntry}");
-            await _visitLogger.Append(logEntry);
         }
     }
 }
